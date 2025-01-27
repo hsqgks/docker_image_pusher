@@ -1,8 +1,33 @@
-# images.txt内容（仅镜像列表）
-nginx
-#支持私库
-k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.0.0
-xhofe/alist：最新
-#支持指定架构
---platform=linux/arm64 xiaoyaliu/alist
-k8s.gcr.io/kube-state-metrics/kube-state-metrics
+1。
+回声“正在登录阿里云镜像仓库...”
+echo“ $ aliyun_registry_password” | docker login -u“ $ aliyun_registry_user” -password -stdin“ $ aliyun_registry”
+如果[$？ -ne 0];然后
+  回声“登录失败，请检查账号、密码或仓库地址！”
+  出口1
+fi
+
+＃2。docker buildx （支持多平台构建）
+回声“初始化docker buildx ...”
+docker buildx创建 - 使用
+Docker Buildx Inspect -bootstrap
+
+＃3。图images.txt推送镜像
+回声“开始推送镜像...”
+ifs =读取-r image;做
+  ＃跳过注释行和空行
+  如果[[“ $ image” == \＃*]] || [[-z“ $ image”]];然后
+    继续
+  fi
+
+  回声“正在推送镜像：$ image”
+  docker拉“ $ image”＃拉取镜像（可选，假设直接推送已有镜像）
+  Docker推出“ $ Image”
+  如果[$？ -eq 0];然后
+    回声“推送成功：$ image”
+  别的
+    回声“推送失败：$ image”
+  fi
+完成<images.txt
+
+回声“ 全部任务完成！”
+````````
